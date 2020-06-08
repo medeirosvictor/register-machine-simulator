@@ -4,6 +4,7 @@ import Register from './components/Register'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
+import URMForm from './components/URMForm';
 
 const useStyles = makeStyles({
     root: {
@@ -34,6 +35,7 @@ function App() {
                 <Typography className={classes.h1} variant="h1" component="h1">
                     Register Machine Simulator
                 </Typography>
+                <URMForm />
                 <div className={classes.registercontainer}>
                     {
                         reglist.map((el, index) => {
