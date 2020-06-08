@@ -1,26 +1,50 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Register from './components/Register'
+import Container from '@material-ui/core/Container'
+import { makeStyles } from '@material-ui/core/styles'
+import { Typography } from '@material-ui/core'
+
+const useStyles = makeStyles({
+    root: {
+      textAlign: "center",
+      height: '100vh'
+    },
+    h1: {
+        fontSize: 40,
+        display: 'block',
+        margin: '20px auto'
+    },
+    registercontainer: {
+        display: 'flex',
+        flexWrap: 'wrap'
+    }
+})
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const classes = useStyles()
+
+    let reglist = new Array(64)
+    reglist.fill(0)
+    console.log(reglist)
+
+    return (
+        <div className="App">
+            <Container>
+                <Typography className={classes.h1} variant="h1" component="h1">
+                    Register Machine Simulator
+                </Typography>
+                <div className={classes.registercontainer}>
+                    {
+                        reglist.map((el, index) => {
+                            console.log(index)
+                            return (<Register registerId={index} registerValue={"0"} key={index}/>)
+                        })
+                    }
+                </div>
+            </Container>
+        </div>
+    );
 }
 
 export default App;
