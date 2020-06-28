@@ -1,3 +1,17 @@
+## Multiplication test code
+
+init r0 30
+init r1 55
+if is0 r1
+    goto 9
+if notis0 r1
+    add r2 r0
+    dec r1
+    goto 3
+else
+    set r12 r3
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
