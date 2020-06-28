@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import Register from './components/Register'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
@@ -16,10 +15,6 @@ const useStyles = makeStyles({
         display: 'block',
         margin: '20px auto'
     },
-    registercontainer: {
-        display: 'flex',
-        flexWrap: 'wrap'
-    }
 })
 
 function App() {
@@ -27,7 +22,6 @@ function App() {
 
     let reglist = new Array(64)
     reglist.fill(0)
-    console.log(reglist)
 
     return (
         <div className="App">
@@ -36,14 +30,6 @@ function App() {
                     Register Machine Simulator
                 </Typography>
                 <URMForm />
-                <div className={classes.registercontainer}>
-                    {
-                        reglist.map((el, index) => {
-                            console.log(index)
-                            return (<Register registerId={index} registerValue={"0"} key={index}/>)
-                        })
-                    }
-                </div>
             </Container>
         </div>
     );
