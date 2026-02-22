@@ -20,9 +20,6 @@ const useStyles = makeStyles({
 function App() {
     const classes = useStyles()
 
-    let reglist = new Array(64)
-    reglist.fill(0)
-
     return (
         <div className="App">
             <Container>

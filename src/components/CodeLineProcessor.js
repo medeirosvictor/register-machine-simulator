@@ -1,50 +1,46 @@
 export default function codeLineProcessor(codeLines, registers) {
-    let lineInterpreter = []
+    const result = [...registers]
     let isInsideIf = false
-    //Parse lines
-    for(let i =0; i < codeLines.length; i++) {
-        console.log(i)
-        let currentLine = codeLines[i]
-        let tokensArray = currentLine.match(/\w+/g);
+
+    for (let i = 0; i < codeLines.length; i++) {
+        const currentLine = codeLines[i]
+        const tokensArray = currentLine.match(/\w+/g);
         let register
-        let condition
-        
-        let command = tokensArray[0].replace(/\s/g, "");
+
+        const command = tokensArray[0].replace(/\s/g, "");
         switch (command) {
             case 'inc':
                 register = tokensArray[1].split('r')[1]
-                registers[register] += 1
+                result[register] += 1
                 break;
             case 'dec':
                 register = tokensArray[1].split('r')[1]
-                registers[register] -= 1
+                result[register] -= 1
                 break;
             case 'set0':
                 register = tokensArray[1].split('r')[1]
-                registers[register] = 0
+                result[register] = 0
                 break;
             case 'set':
                 register = tokensArray[1].split('r')[1]
                 let s = tokensArray[2].split('r')[1]
-                registers[register] = registers[s]
+                result[register] = result[s]
                 break;
             case 'add':
                 register = tokensArray[1].split('r')[1]
                 let adds = tokensArray[2].split('r')[1]
-                registers[register] = parseInt(registers[register]) + parseInt(registers[adds])
+                result[register] = result[register] + result[adds]
                 break;
-            case 'if':
-                //CHECK IF is true
-                condition = tokensArray[1]
+            case 'if': {
+                const condition = tokensArray[1]
                 register = tokensArray[2].split('r')[1]
-                let checkForDiff = condition.includes('not')
-                if (!checkForDiff && registers[register] == 0) {
+                const checkForDiff = condition.includes('not')
+                if (!checkForDiff && result[register] === 0) {
                     isInsideIf = true
-                } else if (checkForDiff && registers[register] != 0) {
-                    //goto else
+                } else if (checkForDiff && result[register] !== 0) {
                     isInsideIf = true
                 } else {
-                    let els = findNextElse(codeLines, i)
+                    const els = findNextElse(codeLines, i)
                     if (els > 0) {
                         i = els - 1
                         continue
@@ -53,37 +49,35 @@ export default function codeLineProcessor(codeLines, registers) {
                     }
                 }
                 break;
+            }
             case 'else':
-                if(isInsideIf) {
+                if (isInsideIf) {
                     isInsideIf = false
                     i++
                 }
                 break;
             case 'goto':
-                i = parseInt(tokensArray[1])
+                i = parseInt(tokensArray[1], 10)
                 break
             case 'init':
                 register = tokensArray[1].split('r')[1]
-                let val = tokensArray[2]
-                registers[register] = val
+                result[register] = parseInt(tokensArray[2], 10)
                 break
         }
     }
 
-    console.log(registers)
-    return registers
+    return result
 }
 
 function findNextElse(codeLines, currentLine) {
-
-    for(let i =currentLine+1; i < codeLines.length; i++) {
-        let currentLine = codeLines[i]
-        let tokensArray = currentLine.match(/\w+/g);
-        let command = tokensArray[0].replace(/\s/g, "");
-        if(command === 'if') {
+    for (let i = currentLine + 1; i < codeLines.length; i++) {
+        const line = codeLines[i]
+        const tokensArray = line.match(/\w+/g);
+        const command = tokensArray[0].replace(/\s/g, "");
+        if (command === 'if') {
             break
         }
-        if(command === 'else') {
+        if (command === 'else') {
             return i
         }
     }
