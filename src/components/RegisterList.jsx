@@ -5,20 +5,19 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles({
     registercontainer: {
         display: 'flex',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        gap: 2,
     }
 })
 
-const RegisterList = ({RL}) => {
+const RegisterList = ({ RL }) => {
     const classes = useStyles()
-
-    const registerList = RL.map((r, index) => {
-        return (<Register registerId={index} registerValue={r} key={index}/>)
-    });
 
     return (
         <div className={classes.registercontainer}>
-            { registerList }
+            {RL.map((r, index) => (
+                <Register registerId={index} registerValue={r} key={index} />
+            ))}
         </div>
     )
 };
