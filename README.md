@@ -1,5 +1,43 @@
-## Multiplication test code
+# Register Machine Simulator
 
+A web-based simulator for an **Unlimited Register Machine (URM)**, built as an undergraduate project with React and Material UI.
+
+> **Note:** This was an undergrad project — the code reflects my skills at the time and is preserved as-is for honesty. See [Housekeeping Notes](#housekeeping-notes) at the bottom for known rough edges.
+
+---
+
+## What is a Register Machine?
+
+A **Register Machine** (specifically a URM — Unlimited Register Machine) is a theoretical model of computation introduced by Shepherdson and Sturgis. It's one of several equivalent formalisms that capture the idea of "what is computable" — sitting alongside Turing Machines, Lambda Calculus, and recursive functions.
+
+The machine operates on an **unlimited** number of **registers** (`r0`, `r1`, `r2`, …), each holding a natural number. A program is a finite sequence of **instructions** that manipulate these registers.
+
+### Why does it matter?
+
+URM models are used in **computability theory** to prove that certain functions are computable (or not). They are equivalent in power to Turing Machines — anything one can compute, the other can too. Their register-based design makes them closer in spirit to real CPUs than a tape-based Turing Machine, which can make certain proofs and constructions more intuitive.
+
+---
+
+## Instruction Set
+
+This simulator supports the following instructions:
+
+| Instruction          | Description                                                        |
+| -------------------- | ------------------------------------------------------------------ |
+| `init rN V`          | Initialize register `rN` with value `V`                           |
+| `inc rN`             | Increment register `rN` by 1                                      |
+| `dec rN`             | Decrement register `rN` by 1                                      |
+| `set0 rN`            | Zero out register `rN`                                             |
+| `set rN rM`          | Copy the value of register `rM` into `rN`                         |
+| `add rN rM`          | Add the value of `rM` to `rN` (result stored in `rN`)             |
+| `if is0 rN`          | If `rN == 0`, execute the following indented block                 |
+| `if notis0 rN`       | If `rN != 0`, execute the following indented block                 |
+| `else`               | Else branch for the preceding `if`                                 |
+| `goto L`             | Jump to line number `L` (0-indexed)                                |
+
+### Example: Multiplication (30 × 55)
+
+```
 init r0 30
 init r1 55
 if is0 r1
@@ -10,74 +48,73 @@ if notis0 r1
     goto 3
 else
     set r12 r3
+```
 
+**How it works:** Register `r0` holds one operand, `r1` the other. The loop repeatedly adds `r0` into `r2` while decrementing `r1`. When `r1` reaches 0 the loop exits and `r2` holds the product (1650).
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the classic "multiplication by repeated addition" — a standard URM exercise that demonstrates loops (`goto`) and conditionals (`if is0` / `if notis0`).
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Getting Started
 
-### `yarn start`
+```bash
+pnpm install
+pnpm dev
+```
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:5173](http://localhost:5173) to use the simulator.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+### Build for production
 
-### `yarn test`
+```bash
+pnpm build
+pnpm preview   # preview the production build locally
+```
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `yarn build`
+## Tech Stack
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **React** (class-free, hooks-based)
+- **Material UI v4** — component library & theming
+- **Vite** — dev server & bundler
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Project Structure
 
-### `yarn eject`
+```
+src/
+├── App.jsx              # Main layout
+├── App.css              # App-level styles
+├── index.css            # Global CSS reset
+├── main.jsx             # Entry point (theme provider, CssBaseline)
+├── theme.js             # MUI theme (palette customization)
+└── components/
+    ├── URMForm.jsx      # Code editor + "Start Simulation" button
+    ├── CodeLineProcessor.js  # Interpreter / instruction executor
+    ├── Register.jsx     # Single register display card
+    └── RegisterList.jsx # Grid of all 64 registers
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+---
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Housekeeping Notes
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+These are known rough edges kept intentionally to reflect the original undergraduate work:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- **Mutable state in the interpreter** — `CodeLineProcessor` mutates the `registers` array in place and returns it. A cleaner approach would return a new array.
+- **`== 0` / `!= 0` comparisons** — uses loose equality (`==`) in the interpreter; `===` would be more idiomatic.
+- **`parseInt` in `add`** — needed because `init` stores values as strings (not numbers). A single canonical parse on `init` would remove the need downstream.
+- **No error handling** — invalid instructions or malformed lines are silently ignored.
+- **`goto` is 0-indexed against the raw line array** — after blank lines are filtered, the indices may surprise users.
+- **Unused variables** — `lineInterpreter` and `condition` are declared but never meaningfully used.
+- **Leftover CRA boilerplate** — some CSS classes (`.App-logo`, `.App-header`) are unused.
+- **No tests beyond the CRA placeholder** — `App.test.js` is the default scaffold.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## License
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
-# register-machine-simulator
+MIT
