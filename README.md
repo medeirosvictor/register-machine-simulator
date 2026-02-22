@@ -4,6 +4,8 @@ A web-based simulator for an **Unlimited Register Machine (URM)**, built as an u
 
 > **Note:** This was an undergrad project — the code reflects my skills at the time and is preserved as-is for honesty. See [Housekeeping Notes](#housekeeping-notes) at the bottom for known rough edges.
 
+**[Live Demo →](https://medeirosvictor.github.io/register-machine-simulator/)**
+
 ---
 
 ## What is a Register Machine?
@@ -104,14 +106,8 @@ src/
 
 These are known rough edges kept intentionally to reflect the original undergraduate work:
 
-- **Mutable state in the interpreter** — `CodeLineProcessor` mutates the `registers` array in place and returns it. A cleaner approach would return a new array.
-- **`== 0` / `!= 0` comparisons** — uses loose equality (`==`) in the interpreter; `===` would be more idiomatic.
-- **`parseInt` in `add`** — needed because `init` stores values as strings (not numbers). A single canonical parse on `init` would remove the need downstream.
 - **No error handling** — invalid instructions or malformed lines are silently ignored.
 - **`goto` is 0-indexed against the raw line array** — after blank lines are filtered, the indices may surprise users.
-- **Unused variables** — `lineInterpreter` and `condition` are declared but never meaningfully used.
-- **Leftover CRA boilerplate** — some CSS classes (`.App-logo`, `.App-header`) are unused.
-- **No tests beyond the CRA placeholder** — `App.test.js` is the default scaffold.
 
 ---
 
